@@ -1,0 +1,27 @@
+{
+  "name": "fork2-myexpress",
+  "version": "0.0.0",
+  "description": "fork2-myexpress ===============",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/whwei/fork2-myexpress.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/whwei/fork2-myexpress/issues"
+  },
+  "homepage": "https://github.com/whwei/fork2-myexpress",
+  "devDependencies": {
+    "mocha": "~1.20.1",
+    "chai": "~1.9.1",
+    "supertest": "~0.13.0"
+  }
+}
