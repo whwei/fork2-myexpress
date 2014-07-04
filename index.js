@@ -10,6 +10,9 @@ module.exports = function() {
 
     stack[0] && stack[0].call(server, req, res, next);
 
+    res.writeHead(404);
+    res.end();
+
     function next() {
       current++;
       if (stack[current]) {
@@ -19,9 +22,6 @@ module.exports = function() {
         res.end();
       }
     }
-
-    res.writeHead(404);
-    res.end();
   };
 
   app.listen = function(port, callback) {

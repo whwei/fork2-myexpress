@@ -59,7 +59,7 @@ describe('app', function() {
   });
 
 
-  describe('calling middleware stack', function() {
+  describe('Implement middleware stack', function() {
     var app,
         server;
 
@@ -72,11 +72,47 @@ describe('app', function() {
         res.end('hello from m1');
       });
 
-      server = app.listen(4000); 
-
-      request(server)
+      request(app)
         .get('/foo')
         .expect('hello from m1')
+        .end(done);
+    });
+
+    it('should be able to call next to call the next middleware', function(done) {
+      app.use(function(req, res, next) {
+        next();
+      });
+
+      app.use(function(req, res, next) {
+        res.end('hello from m2');
+      });
+
+      request(app)
+        .get('/foo')
+        .expect('hello from m2')
+        .end(done);
+    });
+
+    it('should 404 at the end of middleware chain', function(done) {
+      app.use(function(req, res, next) {
+        next();
+      });
+
+      app.use(function(req, res, next) {
+        next();
+      });
+
+      request(app)
+        .get('/foo')
+        .expect(404)
+        .end(done);
+    });
+
+    it('should 404 no middleware added', function(done) {
+
+      request(app)
+        .get('/foo')
+        .expect(404)
         .end(done);
     });
   });
