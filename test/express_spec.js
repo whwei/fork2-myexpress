@@ -1,12 +1,12 @@
-var express = require('../');
+var myexpress = require('../');
 var http = require('http');
 var request = require('supertest');
 var expect = require('chai').expect;
 
 describe('app', function() {
-  var app = express();
 
   describe('create http server', function() {
+    var app = myexpress();
     var server;
 
     before(function() {
@@ -21,7 +21,9 @@ describe('app', function() {
     })
   });
 
-  describe('#listen', function() {
+
+  describe('implement #listen method', function() {
+    var app = myexpress();
     var server;
 
     before(function(done) {
@@ -39,4 +41,46 @@ describe('app', function() {
         .end(done);
     });
   });
-})
+
+  describe('app.use', function() {
+    var app = myexpress();
+
+    it('should has a use method', function() {
+      expect(app.use).to.be.a('function');
+    });
+
+    it('should be able to add middlewares to stack', function() {
+      var m1 = function(){};
+      var m2 = function(){};
+      app.use(m1);
+      app.use(m2);
+      expect(app.stack.length).to.eql(2);
+    })
+  });
+
+
+  describe('calling middleware stack', function() {
+    var app,
+        server;
+
+    beforeEach(function() {
+      app = myexpress();
+    });
+
+    it('should be able to call a single middleware', function(done) {
+      app.use(function(req, res, next) {
+        res.end('hello from m1');
+      });
+
+      server = app.listen(4000); 
+
+      request(server)
+        .get('/foo')
+        .expect('hello from m1')
+        .end(done);
+    });
+  });
+
+
+});
+
