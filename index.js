@@ -1,26 +1,45 @@
 var http = require('http');
 
 module.exports = function() {
-  var server,
-      port = 4000;
+  var port = 4000,
+      server = http.createServer(app);
 
   var app = function(req, res) {
     var stack = app.stack;
     var current = 0;
 
-    stack[0] && stack[0].call(server, req, res, next);
+    return next();
 
-    res.writeHead(404);
-    res.end();
-
-    function next() {
+    function next(err) {
+      var currentMiddleware = stack[current];
       current++;
-      if (stack[current]) {
-        stack[current].call(server, req, res, next);
+
+      if (typeof currentMiddleware !== 'function') {
+        if (!err) {
+          res.writeHead(404);
+          res.end();
+        } else {
+          res.writeHead(500);
+          res.end();
+        }
+      } else if(err instanceof Error) {
+        if (currentMiddleware.length === 4) {
+          return currentMiddleware.call(server, err, req, res, next);
+        } else {
+          return next.call(server, err);
+        }
       } else {
-        res.writeHead(404);
-        res.end();
+        if (currentMiddleware.length !== 4) {
+          try {
+            return currentMiddleware.call(server, req, res, next);
+          } catch (e) {
+            return next.call(server, e);
+          }
+        } else {
+          return next.call(server);
+        }
       }
+      return;
     }
   };
 
@@ -33,8 +52,7 @@ module.exports = function() {
   app.stack = [];
   app.use = function(middleware) {
     app.stack.push(middleware);
-
-    return server;
+    return app;
   }
 
   return app;
