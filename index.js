@@ -1,4 +1,5 @@
-var http = require('http');
+var http = require('http'),
+    util = require('util');
 
 module.exports = function() {
   var port = 4000,
@@ -22,7 +23,7 @@ module.exports = function() {
           res.writeHead(500);
           res.end();
         }
-      } else if(err instanceof Error) {
+      } else if(err) {
         if (currentMiddleware.length === 4) {
           return currentMiddleware.call(server, err, req, res, next);
         } else {
@@ -51,9 +52,14 @@ module.exports = function() {
 
   app.stack = [];
   app.use = function(middleware) {
-    app.stack.push(middleware);
+    if (util.isArray(middleware.stack)) {
+      app.stack = app.stack.concat(middleware.stack)
+    } else {
+      app.stack.push(middleware);
+    }
     return app;
   }
 
   return app;
 };
+
