@@ -1,4 +1,4 @@
-var myexpress = require('../');
+var myexpress = require('../lib/');
 var http = require('http');
 var request = require('supertest');
 var expect = require('chai').expect;

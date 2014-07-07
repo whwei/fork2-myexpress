@@ -2,7 +2,7 @@
   "name": "fork2-myexpress",
   "version": "0.0.0",
   "description": "fork2-myexpress ===============",
-  "main": "index.js",
+  "main": "lib/index.js",
   "directories": {
     "test": "test"
   },
